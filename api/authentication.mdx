@@ -1,0 +1,32 @@
+---
+title: "Authentication"
+description: "How to authenticate with the MagicFurnish Processing API
+"
+---
+
+All MagicFurnish API requests require two authentication headers.
+
+\`\`\`http
+
+X-API-Key: YOUR_API_KEY
+
+X-API-Secret: YOUR_API_SECRET
+
+## Example Request
+
+```
+curl -X POST "https://app.magicfurnish.com/api/v2/ai/external/process" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "X-API-Secret: YOUR_API_SECRET" \
+  -F "image=@floorplan.png"
+```
+
+---
+
+## API Key Management
+
+- Keys are issued per partner environment (dev / staging / production)
+- Keys can be revoked or rotated upon request
+- Keep your API Secret secure — do not expose it client-side
+
+If you need additional keys for your team, contact MagicFurnish Support.

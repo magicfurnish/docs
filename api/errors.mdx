@@ -1,0 +1,37 @@
+---
+title: "Error Codes"
+description: "The MagicFurnish API returns structured JSON errors for all failed requests. Below is a reference for all error types you may encounter while calling the Floor Plan Processing API. 
+"
+---
+
+| HTTP | errorCode            | Description                           |
+| :--- | :------------------- | :------------------------------------ |
+| 400  | INVALID_FILE_TYPE    | Unsupported file type                 |
+| 400  | FILE_TOO_LARGE       | Exceeds max allowed size              |
+| 400  | MULTIPLE_PAGES       | PDF has more than one page            |
+| 400  | DIMENSIONS_NOT_FOUND | Floor plan missing visible dimensions |
+| 400  | MIXED_SCALE_DETECTED | Conflicting scale information         |
+| 422  | FILE_UNREADABLE      | File cannot be parsed                 |
+| 401  | UNAUTHORIZED         | Invalid or missing credentials        |
+| 408  | TIMEOUT              | Processing exceeded time limit        |
+| 500  | AI_SERVICE_ERROR     | Internal AI processing error          |
+| 503  | SERVICE_UNAVAILABLE  | Temporary service outage              |
+
+## Auth Errors (401–403)
+
+| Status  | Meaning              | Example                         |
+| :------ | :------------------- | :------------------------------ |
+| **401** | Missing/invalid auth | `API key and secret required`   |
+| **403** | Key not permitted    | `Not allowed for this endpoint` |
+
+---
+
+## Processing Errors (408, 422, 500)
+
+| Status  | Meaning                  | Example                      |
+| :------ | :----------------------- | :--------------------------- |
+| **408** | Processing timed out     | `AI service request timeout` |
+| **422** | Unable to interpret plan | `File unreadable`            |
+| **500** | Internal service error   | `AI service error`           |
+
+These originate from the processing engine and should be retried later unless noted otherwise.

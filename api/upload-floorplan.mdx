@@ -1,0 +1,45 @@
+---
+title: "Upload Floor Plan"
+description: "Upload a JPG, PNG, or single-page PDF and receive a `layoutUrl` for embedding. 
+"
+---
+
+Endpoint
+
+🚧 Placeholder – will be updated with Munib’s final contract.
+
+\`\`\`text
+
+POST https://api.magicfurnish.com/api/v1/layouts/process
+
+## Request Format
+
+Content type: `multipart/form-data`
+
+| Field   | Type | Required | Description                                |
+| :------ | :--- | :------- | :----------------------------------------- |
+| `image` | file | Yes      | Floor plan as JPG, PNG, or single-page PDF |
+
+Additional params (optional) may be added later (e.g. `tenant`, `metadata`).
+
+## Example Request (placeholder)
+
+```
+curl -X POST "https://api.magicfurnish.com/api/v1/layouts/process" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "X-API-Secret: YOUR_API_SECRET" \
+  -F "image=@/path/to/floorplan.pdf"
+```
+
+## Success Response (placeholder)
+
+```
+{
+  "status": "success",
+  "data": {
+    "layoutId": "LAYOUT_ID",
+    "layoutUrl": "https://viewer.magicfurnish.com/layout/LAYOUT_ID",
+    "thumbnailUrl": "https://cdn.magicfurnish.com/thumbnails/LAYOUT_ID.jpg"
+  }
+}
+```

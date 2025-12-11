@@ -1,0 +1,29 @@
+---
+title: "Quickstart"
+description: "This guide shows you the fastest way to generate a furnished layout and display it inside your product. "
+---
+
+**1. Get your API Credentials**
+
+MagicFurnish provides you with:
+
+- **API Key**
+- **API Secret**
+
+Include these headers with every request.
+
+\> See: [Authentication](../api/authentication)
+
+**2. Upload a Floor Plan**
+
+Send a JPG, PNG, or single-page PDF to the Upload endpoint.
+
+\`\`\`bash
+
+curl -X POST "https://api.magicfurnish.com/api/v1/layouts/process" \\
+
+-H "X-API-Key: YOUR_API_KEY" \\
+
+-H "X-API-Secret: YOUR_API_SECRET" \\
+
+-F "image=@/path/to/floorplan.png"

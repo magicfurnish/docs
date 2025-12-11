@@ -1,0 +1,52 @@
+---
+title: "New file"
+description: "Description of your new file."
+---
+
+# Integration Flow
+
+At a high level, the integration looks like this:
+
+\`\`\`text
+
+[ User in Your App ]
+
+          |
+
+          | (1) Upload floor plan
+
+          v
+
+[ Your Backend ]
+
+          |
+
+          | (2) POST to MagicFurnish API
+
+          v
+
+[ MagicFurnish ]
+
+          |
+
+          | (3) Returns layoutUrl
+
+          v
+
+[ Your Backend ]
+
+          |
+
+          | (4) Store layoutUrl
+
+          v
+
+[ Your Frontend ]
+
+          |
+
+          | (5) Open layoutUrl in webview
+
+          v
+
+[ MagicFurnish Viewer ]
