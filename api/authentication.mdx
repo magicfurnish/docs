@@ -1,7 +1,6 @@
 ---
 title: "Authentication"
-description: "How to authenticate with the MagicFurnish Processing API
-"
+description: "How to authenticate with the MagicFurnish Processing API "
 ---
 
 All MagicFurnish API requests require two authentication headers.
@@ -12,7 +11,7 @@ X-API-Key: YOUR_API_KEY
 
 X-API-Secret: YOUR_API_SECRET
 
-## Example Request
+### Example Request
 
 ```
 curl -X POST "https://app.magicfurnish.com/api/v2/ai/external/process" \
@@ -21,12 +20,34 @@ curl -X POST "https://app.magicfurnish.com/api/v2/ai/external/process" \
   -F "image=@floorplan.png"
 ```
 
----
+### Key Management
 
-## API Key Management
+- Keys are issued per partner environment.
+- Keys can be revoked or rotated at any time.
+- Store secrets securely; **never** expose them in client-side code.
+- Each key is scoped to allow endpoints.
 
-- Keys are issued per partner environment (dev / staging / production)
-- Keys can be revoked or rotated upon request
-- Keep your API Secret secure — do not expose it client-side
+If you need additional keys for your team, contact **<u>peter@magicfurnish.com</u>**.
 
-If you need additional keys for your team, contact MagicFurnish Support.
+### Security Notice
+
+MagicFurnish API keys and secrets are **never** included in public documentation.\
+Your actual credentials are shared privately and must be stored in **server-side environment variables only**.
+
+- Do **not** include keys in frontend code, mobile apps, or public repos
+- Treat keys as passwords
+- Rotate immediately if exposed
+
+All examples on this page use **placeholder** values.
+
+### Authentication Errors
+
+MagicFurnish returns structured JSON errors to help diagnose issues quickly.
+
+| Status  | Message                       | Meaning                                           |
+| :------ | :---------------------------- | :------------------------------------------------ |
+| **401** | `API key and secret required` | Headers missing                                   |
+| **401** | `Authentication failed`       | Key or secret incorrect                           |
+| **403** | `Not allowed`                 | Key is valid but not authorized for this endpoint |
+
+If an authentication error occurs, correct the headers and retry the request.

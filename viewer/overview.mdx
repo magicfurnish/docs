@@ -1,5 +1,73 @@
 ---
-title: 'New file'
-description: 'Description of your new file.'
+title: "MagicFurnish API Overview"
+description: "The MagicFurnish Processing API converts a raw floor plan (JPG, PNG, or single-page PDF) into a furnished, interactive layout. 
+
+"
 ---
 
+Partners upload a plan, and the API returns:
+
+- A **unique layout ID**
+- A **furnished layout image URL**
+- A **MagicFurnish gallery URL** your users can open immediately
+
+This endpoint powers all automated layout generation inside partner platforms, including SERHANT.'s S.MPLE integration.
+
+---
+
+## Core Workflow
+
+1. **Upload a floor plan** using a `POST` request
+2. The API validates the file
+3. MagicFurnish auto-furnishes the layout
+4. Final URLs are returned in the response payload
+5. The partner displays or deep-links into the MagicFurnish gallery
+
+---
+
+## Endpoint Summary
+
+```
+POST /api/v2/ai/external/process
+```
+
+- Accepts `multipart/form-data`
+- Requires two authentication headers
+  - `X-API-Key`
+  - `X-API-Secret`
+- Returns furnished layout URLs on success
+
+---
+
+## Example Success Response
+
+```
+{
+  "status": "success",
+  "data": {
+    "uniqueId": "4959055a-5243-4e1f-8554-4091091f6bdf",
+    "galleryUrl": "https://app.magicfurnish.com/floor-gallery/69245f96705e17e1e881bf2f",
+    "furnishedImageUrl": "https://app.magicfurnish.com/api/v2/g/s3-image/59d98258-5da2-4d73-bcc0-667cd9ded501_layout.jpg"
+  },
+  "code": 200
+}
+```
+
+---
+
+## Supported File Types
+
+- `.jpg`
+- `.png`
+- `.pdf` (single-page only)
+
+---
+
+## When to Use This API
+
+Use the Processing API whenever your platform needs to:
+
+- Convert a floor plan into a furnished preview
+- Display polished layouts inside your own UI
+- Generate interactive layouts that deep-link into MagicFurnish
+- Power an automated “Upload → Layout” flow for real estate agents, renters, or clients

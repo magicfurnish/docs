@@ -1,29 +1,89 @@
 ---
 title: "Quickstart"
-description: "This guide shows you the fastest way to generate a furnished layout and display it inside your product. "
+description: "This guide shows the fastest way to generate a furnished layout using the MagicFurnish Processing API.
+
+You can complete a full integration test in under 2 minutes.
+
+"
 ---
 
-**1. Get your API Credentials**
+# 1. Get Your API Credentials
 
-MagicFurnish provides you with:
+MagicFurnish will provide you with:
 
 - **API Key**
 - **API Secret**
 
-Include these headers with every request.
+Store both in **server-side environment variables only**.
 
-\> See: [Authentication](../api/authentication)
+See **Authentication** for header details.
 
-**2. Upload a Floor Plan**
+---
 
-Send a JPG, PNG, or single-page PDF to the Upload endpoint.
+# 2. Upload a Floor Plan
 
-\`\`\`bash
+Send a JPG, PNG, or single-page PDF to the Processing API.
 
-curl -X POST "https://api.magicfurnish.com/api/v1/layouts/process" \\
+```
+curl -X POST "https://app.magicfurnish.com/api/v2/ai/external/process" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "X-API-Secret: YOUR_API_SECRET" \
+  -F "image=@floorplan.png"
+```
 
--H "X-API-Key: YOUR_API_KEY" \\
+If successful, you’ll receive:
 
--H "X-API-Secret: YOUR_API_SECRET" \\
+- `uniqueId`
+- `galleryUrl` — URL to the hosted MagicFurnish viewer
+- `furnishedImageUrl` — direct image link
 
--F "image=@/path/to/floorplan.png"
+Full response examples are in **Upload Floor Plan**.
+
+---
+
+# 3. Display the Furnished Layout
+
+Open the returned `galleryUrl` in your application.
+
+### Web (iframe)
+
+```
+<iframe
+  src="GALLERY_URL_HERE"
+  style="width: 100%; height: 100%; border: 0;"
+></iframe>
+```
+
+### Mobile (WebView)
+
+Use your standard iOS/Android WebView component.\
+See **Webview Integration** for examples.
+
+---
+
+# 4. (Optional) Add Branding & Navigation
+
+You can append optional parameters:
+
+- `tenant` — apply partner theming
+- `returnUrl` — show a “Back” button that returns to your app
+
+Example:
+
+```
+https://app.magicfurnish.com/floor-gallery/ID?tenant=serhant&returnUrl=https%3A%2F%2Fyourapp.com
+```
+
+---
+
+# You’re Live
+
+Once you can:
+
+1. Upload a plan
+2. Receive a `galleryUrl`
+3. Open it in your app
+
+…you have a complete MagicFurnish integration.
+
+See the **Integration Flow** page for a deeper walkthrough.

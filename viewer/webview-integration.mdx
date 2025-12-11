@@ -1,5 +1,115 @@
 ---
-title: 'New file'
-description: 'Description of your new file.'
+title: "Webview Integration"
+description: "The MagicFurnish Viewer is a hosted experience that displays your furnished layout and allows users to interact with it. "
 ---
 
+You do **not** need an SDK — simply open the returned `galleryUrl` in a webview or iframe.
+
+This page covers the recommended integration patterns for mobile apps and web apps.
+
+---
+
+## Opening the Viewer
+
+After you upload a floor plan through the Processing API, the response includes:
+
+- `galleryUrl` — a fully hosted MagicFurnish viewer link
+
+Example:
+
+```
+{
+  "galleryUrl": "https://app.magicfurnish.com/floor-gallery/69245f96705e17e1e881bf2f"
+}
+```
+
+To display the layout, open this URL directly in your application.
+
+---
+
+# Mobile App Integration (iOS / Android)
+
+Use your platform’s standard WebView component.
+
+### iOS (SwiftUI Example)
+
+```
+struct LayoutWebView: UIViewRepresentable {
+    let url: URL
+
+    func makeUIView(context: Context) -> WKWebView {
+        return WKWebView()
+    }
+
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        uiView.load(URLRequest(url: url))
+    }
+}
+```
+
+### Android (Kotlin Example)
+
+```
+val webView = findViewById<WebView>(R.id.webview)
+webView.settings.javaScriptEnabled = true
+webView.loadUrl(galleryUrl)
+```
+
+---
+
+# Web Integration (iframe)
+
+Simply embed the viewer in an iframe:
+
+```
+<iframe
+  src="https://app.magicfurnish.com/floor-gallery/69245f96705e17e1e881bf2f"
+  style="width: 100%; height: 100%; border: 0;"
+></iframe>
+```
+
+The viewer is responsive and automatically adapts to available space.
+
+---
+
+# Optional Parameters
+
+You can control branding and navigation by appending query parameters:
+
+| Parameter   | Description                                         |
+| :---------- | :-------------------------------------------------- |
+| `tenant`    | Apply partner-specific theming (colors / logo)      |
+| `returnUrl` | Show a “Back” button that returns users to your app |
+
+### Example
+
+```
+https://app.magicfurnish.com/floor-gallery/69245f96705e17e1e881bf2f?tenant=serhant&returnUrl=https%3A%2F%2Fsmple.serhant.com
+```
+
+---
+
+# Best Practices
+
+- Always open the viewer in a **full-screen modal** or dedicated screen
+- Ensure your WebView component allows JavaScript
+- Use `returnUrl` if your app requires controlled navigation
+- Do **not** attempt to inject scripts or modify the viewer (unsupported)
+
+---
+
+# Deep Linking
+
+If you need to preserve navigation context (e.g., S.MPLE), pass a URL-encoded `returnUrl`.\
+MagicFurnish will render a back button that brings the user directly back to your app.
+
+---
+
+# Summary
+
+1. Call the Processing API
+2. Receive a `galleryUrl`
+3. Open it in a webview or iframe
+4. (Optional) Add `tenant` and `returnUrl` parameters
+
+This is the simplest and most stable way to integrate MagicFurnish layouts into any platform.

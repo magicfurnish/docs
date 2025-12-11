@@ -1,52 +1,138 @@
 ---
-title: "New file"
-description: "Description of your new file."
+title: "Integration Flow"
+description: "End-to-end flow for integrating the MagicFurnish Processing API and Viewer.
+
+"
 ---
 
-# Integration Flow
+This guide shows how the MagicFurnish Processing API and Viewer fit into your product from end to end.
 
-At a high level, the integration looks like this:
+At a high level:
 
-\`\`\`text
+1. Your user uploads a floor plan in your app  
 
-[ User in Your App ]
+2. Your backend sends the file to MagicFurnish  
 
-          |
+3. MagicFurnish validates and furnishes the layout  
 
-          | (1) Upload floor plan
+4. You receive a `galleryUrl` and related data  
 
-          v
+5. You open that URL in a webview or iframe
 
-[ Your Backend ]
+## Step 1 – User Uploads a Floor Plan
 
-          |
+In your product (web or mobile):
 
-          | (2) POST to MagicFurnish API
+- Add an upload control that accepts **JPG**, **PNG**, or **single-page PDF**
+- Send the uploaded file to your backend API
 
-          v
+No MagicFurnish calls happen directly from the frontend.
 
-[ MagicFurnish ]
+---
 
-          |
+## Step 2 – Your Backend Calls MagicFurnish
 
-          | (3) Returns layoutUrl
+Once your backend receives the file:
 
-          v
+1. Read the file from your request or storage
+2. Call the MagicFurnish Processing API:
 
-[ Your Backend ]
+```
+curl -X POST "https://app.magicfurnish.com/api/v2/ai/external/process" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "X-API-Secret: YOUR_API_SECRET" \
+  -F "image=@floorplan.png"
+```
 
-          |
+See **Authentication** and **Upload Floor Plan** for full details.
 
-          | (4) Store layoutUrl
+---
 
-          v
+## Step 3 – MagicFurnish Validates & Furnishes
 
-[ Your Frontend ]
+MagicFurnish will:
 
-          |
+- Validate that the file is supported
+- Check for dimensions, page count, and basic quality
+- Run the auto-furnish logic to generate a layout
+- Store the furnished output and generate URLs
 
-          | (5) Open layoutUrl in webview
+If validation fails, you receive a structured error (see **Errors**).
 
-          v
+---
 
-[ MagicFurnish Viewer ]
+## Step 4 – Receive Layout URLs
+
+On success, the API responds with:
+
+```
+{
+  "status": "success",
+  "data": {
+    "uniqueId": "4959055a-5243-4e1f-8554-4091091f6bdf",
+    "galleryUrl": "https://app.magicfurnish.com/floor-gallery/69245f96705e17e1e881bf2f",
+    "furnishedImageUrl": "https://app.magicfurnish.com/api/v2/g/s3-image/59d98258-5da2-4d73-bcc0-667cd9ded501_layout.jpg"
+  },
+  "code": 200
+}
+```
+
+In your backend, you should:
+
+- Store the `uniqueId` and `galleryUrl` against your internal record
+- Optionally store `furnishedImageUrl` as a preview asset
+
+---
+
+## Step 5 – Open the Viewer in Your App
+
+When you want to show the layout:
+
+- Retrieve the stored `galleryUrl`
+- Open it in a **webview** (mobile) or **iframe** (web)
+
+Example iframe:
+
+```
+<iframe
+  src="https://app.magicfurnish.com/floor-gallery/69245f96705e17e1e881bf2f"
+  style="width: 100%; height: 100%; border: 0;"
+></iframe>
+```
+
+For mobile examples, see **Webview Integration**.
+
+---
+
+## Optional – Branding & Return Navigation
+
+You can append query parameters to control branding and navigation:
+
+- `tenant` – apply partner-specific styling
+- `returnUrl` – render a back button that returns users to your app
+
+Example:
+
+```
+https://app.magicfurnish.com/floor-gallery/69245f96705e17e1e881bf2f
+  ?tenant=serhant
+  &returnUrl=https%3A%2F%2Fsmple.serhant.com
+```
+
+---
+
+## Recap
+
+1. User uploads a floor plan to **your** backend
+2. Your backend sends it to the MagicFurnish Processing API
+3. MagicFurnish returns `galleryUrl` and related fields
+4. You store those URLs
+5. Your frontend opens `galleryUrl` in a webview/iframe
+
+Once this loop is wired, generating new layouts becomes a simple “upload → view” flow for your users.
+
+```
+
+If you want, next I can give you a tighter **Quickstart** page that just says: _“Do these 3 things and you’re live”_ — so Coyne’s team can skim it in 30 seconds.
+::contentReference[oaicite:0]{index=0}
+```

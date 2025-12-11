@@ -1,5 +1,88 @@
 ---
-title: 'New file'
-description: 'Description of your new file.'
+title: "Request Parameters"
+description: "The MagicFurnish Processing API accepts a single required parameter (the floor plan file) and two required authentication headers.
+"
 ---
 
+All values must be sent in `multipart/form-data`.
+
+---
+
+## Required Headers
+
+| Header           | Type   | Description                                     |
+| :--------------- | :----- | :---------------------------------------------- |
+| **X-API-Key**    | string | Your MagicFurnish API key (partner-scoped)      |
+| **X-API-Secret** | string | Your MagicFurnish API secret (server-side only) |
+
+> These must be included in **every** request to the Processing API.
+
+---
+
+## Required Body Parameters
+
+### `image`
+
+**Type:** `file`\
+**Format:** `multipart/form-data`\
+**Description:** The raw floor plan file to be processed.
+
+**Supported types:**
+
+- `.jpg`
+- `.png`
+- `.pdf` (single-page only)
+
+**Requirements:**
+
+- Must contain at least one visible dimension
+- File size must be under the supported limit
+- Must not contain furniture (if furniture detection is enabled)
+- PDFs must include exactly one page
+
+---
+
+## Example Request Body
+
+```
+curl -X POST "https://app.magicfurnish.com/api/v2/ai/external/process" \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "X-API-Secret: YOUR_API_SECRET" \
+  -F "image=@/path/to/floorplan.png"
+```
+
+---
+
+## Response Parameters
+
+A successful request returns:
+
+| Field                 | Type   | Description                                  |
+| :-------------------- | :----- | :------------------------------------------- |
+| **uniqueId**          | string | Internal ID for the furnished layout         |
+| **galleryUrl**        | string | URL to open the final layout in MagicFurnish |
+| **furnishedImageUrl** | string | Direct URL to the furnished layout image     |
+
+---
+
+## Example Success Response
+
+```
+{
+  "status": "success",
+  "data": {
+    "uniqueId": "4959055a-5243-4e1f-8554-4091091f6bdf",
+    "galleryUrl": "https://app.magicfurnish.com/floor-gallery/69245f96705e17e1e881bf2f",
+    "furnishedImageUrl": "https://app.magicfurnish.com/api/v2/g/s3-image/59d98258-5da2-4d73-bcc0-667cd9ded501_layout.jpg"
+  },
+  "code": 200
+}
+```
+
+---
+
+## Notes
+
+- The API processes one layout per floor plan.
+- All outputs are delivered in real time via the response payload.
+- No polling or job status checks are required.

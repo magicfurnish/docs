@@ -1,45 +1,119 @@
 ---
 title: "Upload Floor Plan"
-description: "Upload a JPG, PNG, or single-page PDF and receive a `layoutUrl` for embedding. 
+description: "How to submit a floor plan to the MagicFurnish Processing API.
+
+The Upload Floor Plan endpoint accepts a JPG, PNG, or single-page PDF and returns a unique ID, gallery URL, and furnished layout image URL.
 "
 ---
 
-Endpoint
+## Endpoint
 
-🚧 Placeholder – will be updated with Munib’s final contract.
+```
+POST https://app.magicfurnish.com/api/v2/ai/external/process
+```
 
-\`\`\`text
-
-POST https://api.magicfurnish.com/api/v1/layouts/process
+---
 
 ## Request Format
 
-Content type: `multipart/form-data`
+This endpoint expects a `multipart/form-data` POST request with:
 
-| Field   | Type | Required | Description                                |
-| :------ | :--- | :------- | :----------------------------------------- |
-| `image` | file | Yes      | Floor plan as JPG, PNG, or single-page PDF |
+| Field   | Type | Required | Description                             |
+| :------ | :--- | :------- | :-------------------------------------- |
+| `image` | File | Yes      | JPG, PNG, or single-page PDF floor plan |
 
-Additional params (optional) may be added later (e.g. `tenant`, `metadata`).
-
-## Example Request (placeholder)
+### Headers (Required)
 
 ```
-curl -X POST "https://api.magicfurnish.com/api/v1/layouts/process" \
+X-API-Key: YOUR_API_KEY
+X-API-Secret: YOUR_API_SECRET
+```
+
+---
+
+## Example Request
+
+```
+curl -X POST "https://app.magicfurnish.com/api/v2/ai/external/process" \
   -H "X-API-Key: YOUR_API_KEY" \
   -H "X-API-Secret: YOUR_API_SECRET" \
-  -F "image=@/path/to/floorplan.pdf"
+  -F "image=@floorplan.png"
 ```
 
-## Success Response (placeholder)
+---
+
+## Successful Response
+
+If the floor plan is valid and processed successfully, the API returns:
 
 ```
 {
   "status": "success",
   "data": {
-    "layoutId": "LAYOUT_ID",
-    "layoutUrl": "https://viewer.magicfurnish.com/layout/LAYOUT_ID",
-    "thumbnailUrl": "https://cdn.magicfurnish.com/thumbnails/LAYOUT_ID.jpg"
-  }
+    "uniqueId": "4959055a-5243-4e1f-8554-4091091f6bdf",
+    "galleryUrl": "https://app.magicfurnish.com/floor-gallery/69245f96705e17e1e881bf2f",
+    "furnishedImageUrl": "https://app.magicfurnish.com/api/v2/g/s3-image/59d98258-5da2-4d73-bcc0-667cd9ded501_layout.jpg"
+  },
+  "code": 200
 }
 ```
+
+### Field Definitions
+
+| Field               | Description                                           |
+| :------------------ | :---------------------------------------------------- |
+| `uniqueId`          | Internal processing identifier for the uploaded plan  |
+| `galleryUrl`        | URL to the auto-generated MagicFurnish viewer/gallery |
+| `furnishedImageUrl` | Direct link to the furnished layout image             |
+
+---
+
+## Validation Rules
+
+The Upload endpoint performs automatic validation before processing.
+
+Floor plans must:
+
+- Be **JPG**, **PNG**, or **single-page PDF**
+- Be **under 10 MB**
+- Contain **at least one visible dimension**
+- Use **consistent scale** (if multiple scales appear, request is rejected)
+- Not contain visible furniture (to avoid misinterpretation)
+
+---
+
+## Possible Error Responses
+
+| Status | Message                    | Meaning                                  |
+| :----- | :------------------------- | :--------------------------------------- |
+| 400    | Invalid file type          | Must upload JPG, PNG, or single-page PDF |
+| 400    | Multiple pages detected    | PDF contains more than one page          |
+| 400    | Dimensions not visible     | At least one dimension must be readable  |
+| 400    | Mixed scale detected       | Conflicting scales found                 |
+| 400    | Furniture detected         | Remove furniture and re-upload           |
+| 400    | Plan size unsupported      | File exceeds size constraints            |
+| 422    | File unreadable            | Low resolution or corrupted upload       |
+| 408    | AI service request timeout | Processing exceeded time limit           |
+| 500    | AI service error           | Temporary internal model issue           |
+
+For detailed error shapes, see **Errors**.
+
+---
+
+## Processing Time
+
+Typical processing times:
+
+- **Upload:** ~10 seconds
+- **Auto-Furnish:** ~30–60 seconds
+- **Gallery Ready:** instantly upon completion
+
+---
+
+## Next Steps
+
+The returned `galleryUrl` can be:
+
+- Embedded in your app
+- Opened in a webview
+- Linked as part of a workflow (S.MPLE, internal dashboards, etc.)
