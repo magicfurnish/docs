@@ -1,15 +1,79 @@
 ---
 title: "MagicFurnish API"
-description: "MagicFurnish turns static floor plans into interactive, furnished layout experiences. "
+description: "MagicFurnish is an API that turns static floor plans into interactive, furnished layout experiences. "
 ---
 
-This documentation covers:
+Partners upload a floor plan image or PDF, receive a hosted MagicFurnish gallery URL, and present that experience to users inside a browser or webview.
 
-- Uploading a floor plan via API
-- Receiving a layout URL you can embed in your product
-- Optional parameters for theming and navigation 
-- Recommended integration flow
+### **How it works**
 
-🚧 Note
+1. Upload a floor plan via the Processing API
+2. MagicFurnish generates a furnished, interactive layout
+3. You receive a stable `galleryUrl`
+4. Open the `galleryUrl` for your users — no additional configuration required
 
-Endpoint URLs and headers below use placeholders until the v1 contract is finalized.
+All viewing, interaction, and layout editing happens inside MagicFurnish after this handoff.
+
+---
+
+### **What this documentation covers**
+
+This documentation describes the complete MagicFurnish integration contract, including:
+
+- Uploading floor plans via API
+- Authentication and request requirements
+- Error handling, retries, and rate limits
+- Viewer behavior and optional query parameters
+- Recommended production integration flow
+
+The API is designed for server-to-server use and supports web, mobile, and embedded viewer contexts.
+
+---
+
+### **Get started**
+
+If you want to test the full integration end-to-end:
+
+→ **Start with the Quickstart **for the fastest path to a working result\
+→ **Read the Core Concepts** to understand the MagicFurnish mental model\
+→ **See Upload Floor Plan** for the full API contract
+
+---
+
+### **Viewer handoff**
+
+After a successful API response, partners should open the returned `galleryUrl` directly.
+
+The gallery URL can be opened in:
+
+- A browser tab
+- A mobile webview (iOS / Android)
+- An iframe (desktop web)
+
+MagicFurnish handles all layout rendering, interaction, and user actions inside the viewer.
+
+---
+
+### **Stability & versioning**
+
+This documentation describes the MagicFurnish **v1 API contract**.
+
+Within a major version:
+
+- Endpoints are backward compatible
+- Response formats are stable
+- New functionality is additive 
+
+Breaking changes are introduced only with a new major version.
+
+See [**API Versioning**](/api/versioning) for details.
+
+---
+
+### **Support**
+
+If you encounter issues during integration, include the following when contacting MagicFurnish support:
+
+- API key (or partner identifier)
+- `X-Request-Id` header value
+- Returned `uniqueId`, if available
