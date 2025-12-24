@@ -9,7 +9,6 @@
       {
         "group": "Getting Started",
         "pages": [
-          "index",
           "guides/quickstart",
           "guides/integration-flow",
           "index"
