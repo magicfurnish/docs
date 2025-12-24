@@ -25,9 +25,9 @@
       {
         "group": "Viewer Integration",
         "pages": [
+          "viewer/webview-integration"
           "viewer/overview",
           "viewer/parameters",
-          "viewer/webview-integration"
         ]
       }
     ]
