@@ -21,13 +21,14 @@ This endpoint expects a `multipart/form-data` POST request with:
 | Field   | Type | Required | Description                             |
 | :------ | :--- | :------- | :-------------------------------------- |
 | `image` | File | Yes      | JPG, PNG, or single-page PDF floor plan |
+| `additionalData` | text | No      | Optional JSON string echoed back |
 
-### Headers (Required)
+### Headers
 
 ```
 X-API-Key: YOUR_API_KEY
 X-API-Secret: YOUR_API_SECRET
-X-Request-Id (optional)
+Optional: X-Request-Id: demo-req-001
 ```
 
 ---
@@ -38,7 +39,9 @@ X-Request-Id (optional)
 curl -X POST "https://api.magicfurnish.com/api/v2/ai/process" \
   -H "X-API-Key: YOUR_API_KEY" \
   -H "X-API-Secret: YOUR_API_SECRET" \
-  -F "image=@floorplan.png"
+  -H "X-Request-Id: demo-req-001" \
+  -F "image=@floorplan.png" \
+  -F 'additionalData={"project_id":"demo"}'
 ```
 
 ---
@@ -88,10 +91,10 @@ Floor plans must:
 | Status | Code                       | Meaning                                                       |
 | :----- | :------------------------- | :------------------------------------------------------------ |
 | 400    | invalid_file               | File is not a supported image/PDF, or cannot be parsed        |
-| 400    | multipe_pages              | PDF contains more than one page                               |
+| 400    | multiple_pages             | PDF contains more than one page                               |
 | 400    | furniture_detected         | Floor plan contains visible furniture (remove and re-upload)  |
 | 400    | dimensions_missing         | At least one dimension must be readable                       |
-| 400    | size_unsupported           | Remove furniture and re-upload                                |
+| 400    | size_unsupported           | Dimensions/scale not supported                                |
 | 400    | file_unreadable            | Low resolution or corrupted upload                            |
 | 401    | unauthorized               | Missing/invalid API key/secret                                |
 | 403    | forbidden                  | Key not allowed for this endpoint                             |
@@ -108,7 +111,7 @@ For detailed error shapes, see **Errors**.
 
 ## Processing Time
 
-Typical processing times:
+Typical processing times (approximate):
 
 - **Upload:** ~10 seconds
 - **Auto-Furnish:** ~30–60 seconds
