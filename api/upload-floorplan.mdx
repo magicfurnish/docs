@@ -27,6 +27,7 @@ This endpoint expects a `multipart/form-data` POST request with:
 ```
 X-API-Key: YOUR_API_KEY
 X-API-Secret: YOUR_API_SECRET
+X-Request-Id (optional)
 ```
 
 ---
@@ -51,7 +52,7 @@ If the floor plan is valid and processed successfully, the API returns:
   "status": "success",
   "data": {
     "uniqueId": "4959055a-5243-4e1f-8554-4091091f6bdf",
-    "galleryUrl": "https://api.magicfurnish.com/floor-gallery/69245f96705e17e1e881bf2f",
+    "galleryUrl": "https://app.magicfurnish.com/floor-gallery/69245f96705e17e1e881bf2f",
     "furnishedImageUrl": "https://api.magicfurnish.com/api/v2/g/s3-image/59d98258-5da2-4d73-bcc0-667cd9ded501_layout.jpg"
   },
   "code": 200
@@ -84,17 +85,22 @@ Floor plans must:
 
 ## Possible Error Responses
 
-| Status | Message                    | Meaning                                  |
-| :----- | :------------------------- | :--------------------------------------- |
-| 400    | Invalid file type          | Must upload JPG, PNG, or single-page PDF |
-| 400    | Multiple pages detected    | PDF contains more than one page          |
-| 400    | Dimensions not visible     | At least one dimension must be readable  |
-| 400    | Mixed scale detected       | Conflicting scales found                 |
-| 400    | Furniture detected         | Remove furniture and re-upload           |
-| 400    | Plan size unsupported      | File exceeds size constraints            |
-| 422    | File unreadable            | Low resolution or corrupted upload       |
-| 408    | AI service request timeout | Processing exceeded time limit           |
-| 500    | AI service error           | Temporary internal model issue           |
+| Status | Code                       | Meaning                                                       |
+| :----- | :------------------------- | :------------------------------------------------------------ |
+| 400    | invalid_file               | File is not a supported image/PDF, or cannot be parsed        |
+| 400    | multipe_pages              | PDF contains more than one page                               |
+| 400    | furniture_detected         | Floor plan contains visible furniture (remove and re-upload)  |
+| 400    | dimensions_missing         | At least one dimension must be readable                       |
+| 400    | size_unsupported           | Remove furniture and re-upload                                |
+| 400    | file_unreadable            | Low resolution or corrupted upload                            |
+| 401    | unauthorized               | Missing/invalid API key/secret                                |
+| 403    | forbidden                  | Key not allowed for this endpoint                             |
+| 408    | timeout                    | Processing exceeded time limit                                |
+| 413    | payload_too_large          | File exceeds 10 MB                                            |
+| 415    | unsupported_media_type     | Unsupported file type                                         |
+| 429    | rate_limited               | Too many requests                                             |
+| 500    | internal_error             | Unexpected internal error                                     |
+| 503    | service_unavailable        | Service temporarily unavailable                               |
 
 For detailed error shapes, see **Errors**.
 
@@ -116,4 +122,4 @@ The returned `galleryUrl` can be:
 
 - Embedded in your app
 - Opened in a webview
-- Linked as part of a workflow (S.MPLE, internal dashboards, etc.)
+- Linked as part of a workflow (internal dashboards, listing platforms, etc.)
