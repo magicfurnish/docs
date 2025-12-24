@@ -32,29 +32,32 @@ You can embed the `galleryUrl` in a standard iframe:
 
 Iframe embedding is supported in web environments that allow third-party content.
 
-Mobile (WebView)
+---
 
-Use your standard iOS or Android WebView component to open the galleryUrl.
+## Mobile Integration (WebView)
 
-Recommended settings:
+Use your platform’s native iOS or Android WebView component to open the `galleryUrl`.
 
-JavaScript enabled
+### Recommended settings
 
-External links allowed
+- JavaScript enabled
+- External links allowed
+- Cookies enabled (default behavior)
 
-Optional URL Parameters
+All rendering and interaction are handled by MagicFurnish inside the WebView.
 
-You may append optional query parameters to the galleryUrl:
+---
 
-tenant — apply partner-specific theming
+## Optional URL Parameters
 
-returnUrl — display a “Back” button that returns users to your app
+You may append optional query parameters to the `galleryUrl`.
 
-Example
+| Parameter | Description |
+|----------|-------------|
+| `tenant` | Apply partner-specific theming |
+| `returnUrl` | Display a “Back” button that returns users to your app |
+
+### Example
+
+```txt
 https://app.magicfurnish.com/floor-gallery/ID?tenant=partner&returnUrl=https%3A%2F%2Fyourapp.com
-
-Summary
-
-1. Upload a floor plan
-2. Receive a galleryUrl
-3. Open the galleryUrl in your app
