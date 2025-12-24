@@ -9,7 +9,7 @@ The Upload Floor Plan endpoint accepts a JPG, PNG, or single-page PDF and return
 ## Endpoint
 
 ```
-POST https://app.magicfurnish.com/api/v2/ai/external/process
+POST https://api.magicfurnish.com/api/v2/ai/process
 ```
 
 ---
@@ -34,7 +34,7 @@ X-API-Secret: YOUR_API_SECRET
 ## Example Request
 
 ```
-curl -X POST "https://app.magicfurnish.com/api/v2/ai/external/process" \
+curl -X POST "https://api.magicfurnish.com/api/v2/ai/process" \
   -H "X-API-Key: YOUR_API_KEY" \
   -H "X-API-Secret: YOUR_API_SECRET" \
   -F "image=@floorplan.png"
@@ -51,8 +51,8 @@ If the floor plan is valid and processed successfully, the API returns:
   "status": "success",
   "data": {
     "uniqueId": "4959055a-5243-4e1f-8554-4091091f6bdf",
-    "galleryUrl": "https://app.magicfurnish.com/floor-gallery/69245f96705e17e1e881bf2f",
-    "furnishedImageUrl": "https://app.magicfurnish.com/api/v2/g/s3-image/59d98258-5da2-4d73-bcc0-667cd9ded501_layout.jpg"
+    "galleryUrl": "https://api.magicfurnish.com/floor-gallery/69245f96705e17e1e881bf2f",
+    "furnishedImageUrl": "https://api.magicfurnish.com/api/v2/g/s3-image/59d98258-5da2-4d73-bcc0-667cd9ded501_layout.jpg"
   },
   "code": 200
 }
