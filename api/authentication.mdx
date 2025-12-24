@@ -1,22 +1,28 @@
 ---
 title: "Authentication"
-description: "How to authenticate with the MagicFurnish Processing API "
+description: "How to authenticate with the MagicFurnish Processing API"
 ---
 
-All MagicFurnish API requests require two authentication headers.
+All MagicFurnish API requests require authentication via request headers.
 
-\`\`\`http
+## Required Headers
 
+```http
 X-API-Key: YOUR_API_KEY
-
 X-API-Secret: YOUR_API_SECRET
+```
+
+## Optional Headers
+
+X-Request-Id: demo-req-001
 
 ### Example Request
 
 ```
-curl -X POST "https://app.magicfurnish.com/api/v2/ai/external/process" \
+curl -X POST "https://api.magicfurnish.com/api/v2/ai/process" \
   -H "X-API-Key: YOUR_API_KEY" \
   -H "X-API-Secret: YOUR_API_SECRET" \
+  -H "X-Request-Id: demo-req-001" \
   -F "image=@floorplan.png"
 ```
 
@@ -24,7 +30,7 @@ curl -X POST "https://app.magicfurnish.com/api/v2/ai/external/process" \
 
 - Keys are issued per partner environment.
 - Keys can be revoked or rotated at any time.
-- Store secrets securely; **never** expose them in client-side code.
+- Store secrets securely; **never expose them in client-side code**.
 - Each key is scoped to allow endpoints.
 
 If you need additional keys for your team, contact **<u>peter@magicfurnish.com</u>**.
@@ -38,16 +44,15 @@ Your actual credentials are shared privately and must be stored in **server-side
 - Treat keys as passwords
 - Rotate immediately if exposed
 
-All examples on this page use **placeholder** values.
+All examples on this page use **placeholder values**.
 
 ### Authentication Errors
 
-MagicFurnish returns structured JSON errors to help diagnose issues quickly.
+Authentication failures return structured JSON errors.
 
-| Status  | Message                       | Meaning                                           |
+| Status  | Code                       | Meaning                                           |
 | :------ | :---------------------------- | :------------------------------------------------ |
-| **401** | `API key and secret required` | Headers missing                                   |
-| **401** | `Authentication failed`       | Key or secret incorrect                           |
-| **403** | `Not allowed`                 | Key is valid but not authorized for this endpoint |
+| **401** | unauthorized | Missing or invalid X-API-Key / X-API-Secret                                   |
+| **403** | forbidden                       | Key is valid but not authorized for this endpoint |
 
 If an authentication error occurs, correct the headers and retry the request.
