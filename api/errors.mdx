@@ -1,76 +1,70 @@
 ---
 title: "Error Codes"
-description: "MagicFurnish returns structured JSON errors to help partners diagnose issues quickly. All error responses include a status, message, and code. "
+description: "MagicFurnish returns structured JSON errors with a status and a code. Use these codes to handle failures reliably. "
 ---
 
 ## Error Response Format
 
-```
+All error responses are JSON and include a 'status' and a machine-readable 'code'.
+
+```json
 {
   "status": "error",
+  "code": "dimensions_missing",
   "message": "Detailed error message explaining what went wrong",
-  "code": 400
+  "statusCode": 400
 }
 ```
 
 ---
 
-# Validation Errors (400)
+# Validation errors (400)
 
 These errors occur _before_ the auto-furnish process begins.
 
-| Status  | Message                   | Meaning                                        |
-| :------ | :------------------------ | :--------------------------------------------- |
-| **400** | `Invalid file type`       | Must be JPG, PNG, or single-page PDF           |
-| **400** | `Multiple pages detected` | PDF contains more than one page                |
-| **400** | `Dimensions not visible`  | No readable dimension found on the plan        |
-| **400** | `Mixed scale detected`    | Conflicting scale indicators on the plan       |
-| **400** | `Furniture detected`      | Visible furniture found — remove and re-upload |
-| **400** | `Plan size unsupported`   | File too large or resolution not supported     |
-| **400** | `Invalid input`           | General input validation failure               |
+| Status | code | Meaning |
+|------:|------|---------|
+| 400 | invalid_file | File is not a supported image/PDF, or cannot be parsed |
+| 400 | multiple_pages | PDF contains more than one page |
+| 400 | furniture_detected | Floor plan contains visible furniture (remove and re-upload) |
+| 400 | dimensions_missing | At least one dimension must be readable |
+| 400 | size_unsupported | Dimensions/scale not supported |
+| 400 | file_unreadable | Low resolution or corrupted upload |
 
 ---
 
-# Authentication Errors (401 / 403)
+# Authentication & authorization (401 / 403)
 
 These errors occur when authentication headers are missing or invalid.
 
-| Status  | Message                       | Meaning                                           |
-| :------ | :---------------------------- | :------------------------------------------------ |
-| **401** | `API key and secret required` | Missing headers                                   |
-| **401** | `Authentication failed`       | Incorrect key or secret                           |
-| **403** | `Not allowed`                 | Key is valid but not authorized for this endpoint |
+| Status | code | Meaning |
+|------:|------|---------|
+| 401 | unauthorized | Missing or invalid `X-API-Key` / `X-API-Secret` |
+| 403 | forbidden | Key is valid but not allowed for this endpoint |
 
 ---
 
-# Processing Errors (408 / 422 / 500)
+# Processing and system errors
 
 Errors thrown during or after the auto-furnish request.
 
-| Status  | Message                      | Meaning                                        |
-| :------ | :--------------------------- | :--------------------------------------------- |
-| **408** | `AI service request timeout` | Processing exceeded the maximum time           |
-| **422** | `File unreadable`            | Corrupted, low quality, or unprocessable image |
-| **500** | `AI service error`           | Temporary internal model failure               |
-| **500** | `Internal server error`      | General back-end failure                       |
+| Status | code | Meaning |
+|------:|------|---------|
+| 408 | timeout | Processing exceeded the time limit |
+| 413 | payload_too_large | File exceeds 10 MB |
+| 415 | unsupported_media_type | Unsupported file type |
+| 429 | rate_limited | Too many requests |
+| 500 | internal_error | Unexpected internal error |
+| 503 | service_unavailable | Service temporarily unavailable |
 
 ---
 
-# Example Error Response
+### Handling guidance
 
-```
-{
-  "status": "error",
-  "message": "Dimensions not visible",
-  "code": 400
-}
-```
-
----
-
-# How to Handle Errors
-
-- **400-level errors** → Fix the input and retry
-- **401/403 errors** → Check authentication headers
-- **408 errors** → Retry with a clearer or smaller file
-- **422/500 errors** → Retry after a short delay; contact support if persistent
+- **400-level validation errors:** fix the input and retry.
+- **401/403:** verify credentials and permissions.
+- **408:** retry with backoff; contact support if persistent.
+- **413:** reduce file size or upload a smaller file.
+- **415:** ensure the upload is JPG, PNG, or single-page PDF.
+- **429:** slow down requests; retry after backoff.
+- **500/503:** retry with backoff; contact support if persistent.
