@@ -11,7 +11,8 @@
         "pages": [
           "index",
           "guides/quickstart",
-          "guides/integration-flow"
+          "guides/integration-flow",
+          "index"
         ]
       },
       {
